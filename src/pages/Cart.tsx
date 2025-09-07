@@ -4,7 +4,7 @@ import { useCart } from '../contexts/CartContext'
 import { Link } from 'react-router-dom'
 
 const Cart: React.FC = () => {
-  const { items, removeItem, updateQuantity, clearCart, total } = useCart()
+  const { items, serviceItems, productItems, removeItem, updateQuantity, clearCart, total, serviceTotal, productTotal } = useCart()
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity < 1) {
@@ -251,13 +251,26 @@ const Cart: React.FC = () => {
               </div>
 
               {/* Checkout Button */}
-              <Link
-                to="/booking"
-                className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 mb-6"
-              >
-                <CreditCard className="w-5 h-5" />
-                <span>Proceed to Booking</span>
-              </Link>
+              <div className="space-y-3 mb-6">
+                {serviceItems.length > 0 && (
+                  <Link
+                    to="/booking"
+                    className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    <span>Book Appointments (KES {serviceTotal.toLocaleString()})</span>
+                  </Link>
+                )}
+                {productItems.length > 0 && (
+                  <Link
+                    to="/order"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex items-center justify-center space-x-2"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    <span>Place Order (KES {productTotal.toLocaleString()})</span>
+                  </Link>
+                )}
+              </div>
 
               {/* Payment Methods */}
               <div className="border-t border-gray-200 pt-6">

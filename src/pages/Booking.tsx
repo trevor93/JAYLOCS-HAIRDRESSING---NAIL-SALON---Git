@@ -4,7 +4,7 @@ import { format, addDays, startOfWeek, isSameDay, isAfter, isBefore } from 'date
 import { useCart } from '../contexts/CartContext'
 
 const Booking: React.FC = () => {
-  const { items } = useCart()
+  const { serviceItems, clearServices } = useCart()
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState('')
   const [formData, setFormData] = useState({
@@ -12,7 +12,9 @@ const Booking: React.FC = () => {
     phone: '',
     email: '',
     service: '',
-    notes: ''
+    notes: '',
+    paymentMethod: '',
+    cashAmount: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -96,7 +98,7 @@ const Booking: React.FC = () => {
       ...formData,
       date: selectedDate,
       time: selectedTime,
-      cartItems: items
+      cartItems: serviceItems
     })
     setIsSubmitted(true)
   }
@@ -104,6 +106,26 @@ const Booking: React.FC = () => {
   const getDayName = (date: Date) => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     return days[date.getDay()]
+  }
+
+  const total = serviceItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+  const cashAmount = parseFloat(formData.cashAmount) || 0
+  const change = cashAmount - total
+
+  if (serviceItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Calendar className="w-8 h-8 text-gray-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">No Services to Book</h2>
+          <p className="text-gray-600 mb-6">
+            Add some services to your cart first.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   if (isSubmitted) {
@@ -128,7 +150,8 @@ const Booking: React.FC = () => {
               setIsSubmitted(false)
               setSelectedDate(null)
               setSelectedTime('')
-              setFormData({ name: '', phone: '', email: '', service: '', notes: '' })
+              setFormData({ name: '', phone: '', email: '', service: '', notes: '', paymentMethod: '', cashAmount: '' })
+              clearServices()
             }}
             className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200"
           >
@@ -307,6 +330,79 @@ const Booking: React.FC = () => {
                   </select>
                 </div>
 
+                {/* Payment Method */}
+                <div>
+                  <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-2">
+                    Payment Method *
+                  </label>
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    required
+                    value={formData.paymentMethod}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  >
+                    <option value="">Choose payment method...</option>
+                    <option value="mpesa">M-Pesa</option>
+                    <option value="cash">Cash</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="payless">Payless (Kenya)</option>
+                    <option value="kcb">KCB Paybill</option>
+                  </select>
+                </div>
+
+                {/* Cash Payment Calculator */}
+                {formData.paymentMethod === 'cash' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-800 mb-3 flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                      </svg>
+                      Cash Payment Calculator
+                    </h4>
+                    <div className="space-y-3">
+                      <div>
+                        <label htmlFor="cashAmount" className="block text-sm font-medium text-blue-700 mb-1">
+                          Amount You Have (KES)
+                        </label>
+                        <input
+                          type="number"
+                          id="cashAmount"
+                          name="cashAmount"
+                          value={formData.cashAmount}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Enter cash amount..."
+                        />
+                      </div>
+                      
+                      {cashAmount > 0 && (
+                        <div className="bg-white rounded-lg p-3 border border-blue-200">
+                          <div className="flex justify-between text-sm mb-2">
+                            <span className="text-gray-600">Service Total:</span>
+                            <span className="font-medium">KES {total.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between text-sm mb-2">
+                            <span className="text-gray-600">Cash Given:</span>
+                            <span className="font-medium">KES {cashAmount.toLocaleString()}</span>
+                          </div>
+                          <div className="border-t pt-2">
+                            <div className="flex justify-between font-semibold">
+                              <span className={change >= 0 ? 'text-green-600' : 'text-red-600'}>
+                                {change >= 0 ? 'Change:' : 'Short by:'}
+                              </span>
+                              <span className={change >= 0 ? 'text-green-600' : 'text-red-600'}>
+                                KES {Math.abs(change).toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Additional Notes */}
                 <div>
                   <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
@@ -327,11 +423,11 @@ const Booking: React.FC = () => {
                 </div>
 
                 {/* Cart Summary */}
-                {items.length > 0 && (
+                {serviceItems.length > 0 && (
                   <div className="border-t pt-6">
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">Cart Summary</h3>
                     <div className="space-y-2 mb-4">
-                      {items.map((item) => (
+                      {serviceItems.map((item) => (
                         <div key={item.id} className="flex justify-between text-sm">
                           <span>{item.name} x{item.quantity}</span>
                           <span className="font-medium">KES {(item.price * item.quantity).toLocaleString()}</span>
@@ -341,7 +437,7 @@ const Booking: React.FC = () => {
                     <div className="border-t pt-2">
                       <div className="flex justify-between font-semibold">
                         <span>Total:</span>
-                        <span className="text-pink-600">KES {items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</span>
+                        <span className="text-pink-600">KES {total.toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
@@ -350,7 +446,7 @@ const Booking: React.FC = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={!selectedDate || !selectedTime || !formData.name || !formData.phone || !formData.service}
+                  disabled={!selectedDate || !selectedTime || !formData.name || !formData.phone || !formData.service || !formData.paymentMethod || (formData.paymentMethod === 'cash' && change < 0)}
                   className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-4 px-6 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                 >
                   Book Appointment

@@ -187,10 +187,11 @@ const NailCare: React.FC = () => {
                 {/* Action Button */}
                 <button
                   onClick={() => handleBookService(service)}
-                  className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
+                  className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 text-sm group"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Add - KES {service.price.toLocaleString()}</span>
+                  <span className="group-hover:hidden">Add - KES {service.price.toLocaleString()}</span>
+                  <span className="hidden group-hover:inline">Book Now</span>
                 </button>
               </div>
             </div>

@@ -310,10 +310,11 @@ const TrenchCoats: React.FC = () => {
                 {/* Action Button */}
                 <button
                   onClick={() => handleAddToCart(coat)}
-                  className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 group"
                 >
                   <Plus className="w-5 h-5" />
-                  <span>Add to Cart</span>
+                  <span className="group-hover:hidden">Add to Cart</span>
+                  <span className="hidden group-hover:inline">Order Now</span>
                 </button>
               </div>
             </div>

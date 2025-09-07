@@ -17,6 +17,7 @@ import Booking from './pages/Booking'
 import Contact from './pages/Contact'
 import About from './pages/About'
 import Cart from './pages/Cart'
+import Order from './pages/Order'
 
 function App() {
   return (
@@ -97,6 +98,14 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Cart />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/order" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Order />
                 </Layout>
               </ProtectedRoute>
             } />
