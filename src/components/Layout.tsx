@@ -12,6 +12,9 @@ import {
   Palette,
   Star,
   Sparkles
+  ChevronDown,
+  Calendar,
+  Plus
 } from 'lucide-react'
 
 interface LayoutProps {
@@ -19,9 +22,10 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
   const { items } = useCart()
   const location = useLocation()
+  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
 
   const handleLogout = async () => {
     try {
@@ -37,8 +41,66 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const cartItemCount = items.reduce((total, item) => total + item.quantity, 0)
 
+  const toggleDropdown = (dropdown: string) => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown)
+  }
+
+  const closeDropdown = () => {
+    setOpenDropdown(null)
+  }
+
+  // Hair Dressing Services
+  const hairServices = [
+    { name: 'Braids', price: 300, link: '/hairdressing' },
+    { name: 'Knotless Braids', price: 500, link: '/hairdressing' },
+    { name: 'Weaving', price: 500, link: '/hairdressing' },
+    { name: 'Wash & Blow Dry', price: 200, link: '/hairdressing' },
+    { name: 'Twist Out', price: 400, link: '/hairdressing' }
+  ]
+
+  // Nail Care Services
+  const nailServices = [
+    { name: 'Pedicure + Polish', price: 400, link: '/nailcare' },
+    { name: 'Pedicure + Gel Polish', price: 500, link: '/nailcare' },
+    { name: 'Manicure + Polish', price: 250, link: '/nailcare' },
+    { name: 'Manicure + Gel Polish', price: 350, link: '/nailcare' },
+    { name: 'Polish', price: 100, link: '/nailcare' },
+    { name: 'Gel Polish', price: 200, link: '/nailcare' },
+    { name: 'Tip + Polish', price: 300, link: '/nailcare' },
+    { name: 'Tip + Gel', price: 500, link: '/nailcare' },
+    { name: 'Stick-on + Polish', price: 300, link: '/nailcare' },
+    { name: 'Stick-on + Gel', price: 400, link: '/nailcare' },
+    { name: 'Eyebrows Tattoo', price: 200, link: '/nailcare' }
+  ]
+
+  // Dreadlock Services by Category
+  const dreadlockServices = {
+    installation: [
+      { name: 'Artificial/Temporary Locks', price: 3000, link: '/dreadlocks' },
+      { name: 'Dreadlock Extension', price: 2500, link: '/dreadlocks' },
+      { name: 'Instant Locks', price: 3500, link: '/dreadlocks' },
+      { name: 'Sisterlocks', price: 5000, link: '/dreadlocks' },
+      { name: 'Microlocs', price: 800, link: '/dreadlocks' },
+      { name: 'Traditional Dreadlocks', price: 2000, link: '/dreadlocks' }
+    ],
+    maintenance: [
+      { name: 'Retwisting/Re-tightening', price: 500, link: '/dreadlocks' },
+      { name: 'Loc Repair', price: 300, link: '/dreadlocks' },
+      { name: 'Loc Cleansing & Detox', price: 400, link: '/dreadlocks' },
+      { name: 'Loc Combining', price: 250, link: '/dreadlocks' }
+    ],
+    styling: [
+      { name: 'Loc Styling (Braids, Updos, Buns)', price: 300, link: '/dreadlocks' },
+      { name: 'Dreadlock Coloring', price: 800, link: '/dreadlocks' },
+      { name: 'Interlocking', price: 600, link: '/dreadlocks' }
+    ],
+    consultation: [
+      { name: 'Consultation for Starters', price: 200, link: '/dreadlocks' },
+      { name: 'Hair Type & Care Plan', price: 150, link: '/dreadlocks' }
+    ]
+  }
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" onClick={closeDropdown}>
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,7 +116,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </Link>
 
             {/* Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-6 relative">
               <Link
                 to="/"
                 className={`flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
@@ -67,6 +129,277 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <span>Home</span>
               </Link>
 
+              {/* Hair Dressing Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleDropdown('hair')
+                  }}
+                  className={`flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
+                    isActive('/hairdressing') 
+                      ? 'text-pink-600' 
+                      : 'text-gray-700 hover:text-pink-600'
+                  }`}
+                >
+                  <Scissors className="w-4 h-4" />
+                  <span>Hair Dressing</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    openDropdown === 'hair' ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                
+                {openDropdown === 'hair' && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-800">Hair Services</h3>
+                    </div>
+                    {hairServices.map((service, index) => (
+                      <Link
+                        key={index}
+                        to={service.link}
+                        className="flex items-center justify-between px-4 py-2 hover:bg-pink-50 transition-colors duration-200"
+                        onClick={closeDropdown}
+                      >
+                        <span className="text-gray-700">{service.name}</span>
+                        <span className="text-pink-600 font-medium">KES {service.price}</span>
+                      </Link>
+                    ))}
+                    <div className="border-t border-gray-100 mt-2 pt-2">
+                      <Link
+                        to="/hairdressing"
+                        className="flex items-center justify-center px-4 py-2 text-pink-600 font-medium hover:bg-pink-50 transition-colors duration-200"
+                        onClick={closeDropdown}
+                      >
+                        View All Hair Services
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Nail Care Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleDropdown('nail')
+                  }}
+                  className={`flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
+                    isActive('/nailcare') 
+                      ? 'text-pink-600' 
+                      : 'text-gray-700 hover:text-pink-600'
+                  }`}
+                >
+                  <Palette className="w-4 h-4" />
+                  <span>Nail Care</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    openDropdown === 'nail' ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                
+                {openDropdown === 'nail' && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-80 overflow-y-auto">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-800">Nail Services</h3>
+                    </div>
+                    {nailServices.map((service, index) => (
+                      <Link
+                        key={index}
+                        to={service.link}
+                        className="flex items-center justify-between px-4 py-2 hover:bg-pink-50 transition-colors duration-200"
+                        onClick={closeDropdown}
+                      >
+                        <span className="text-gray-700 text-sm">{service.name}</span>
+                        <span className="text-pink-600 font-medium text-sm">KES {service.price}</span>
+                      </Link>
+                    ))}
+                    <div className="border-t border-gray-100 mt-2 pt-2">
+                      <Link
+                        to="/nailcare"
+                        className="flex items-center justify-center px-4 py-2 text-pink-600 font-medium hover:bg-pink-50 transition-colors duration-200"
+                        onClick={closeDropdown}
+                      >
+                        View All Nail Services
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Dreadlocks Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleDropdown('dreadlocks')
+                  }}
+                  className={`flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
+                    isActive('/dreadlocks') 
+                      ? 'text-pink-600' 
+                      : 'text-gray-700 hover:text-pink-600'
+                  }`}
+                >
+                  <Star className="w-4 h-4" />
+                  <span>Dreadlocks</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    openDropdown === 'dreadlocks' ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                
+                {openDropdown === 'dreadlocks' && (
+                  <div className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-96 overflow-y-auto">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-800">Dreadlock Services</h3>
+                    </div>
+                    
+                    {/* Installation */}
+                    <div className="px-4 py-2">
+                      <h4 className="font-medium text-purple-600 text-sm mb-2">Installation</h4>
+                      {dreadlockServices.installation.map((service, index) => (
+                        <Link
+                          key={index}
+                          to={service.link}
+                          className="flex items-center justify-between px-2 py-1 hover:bg-pink-50 transition-colors duration-200 rounded"
+                          onClick={closeDropdown}
+                        >
+                          <span className="text-gray-700 text-sm">{service.name}</span>
+                          <span className="text-pink-600 font-medium text-sm">KES {service.price}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    
+                    {/* Maintenance */}
+                    <div className="px-4 py-2 border-t border-gray-100">
+                      <h4 className="font-medium text-purple-600 text-sm mb-2">Maintenance</h4>
+                      {dreadlockServices.maintenance.map((service, index) => (
+                        <Link
+                          key={index}
+                          to={service.link}
+                          className="flex items-center justify-between px-2 py-1 hover:bg-pink-50 transition-colors duration-200 rounded"
+                          onClick={closeDropdown}
+                        >
+                          <span className="text-gray-700 text-sm">{service.name}</span>
+                          <span className="text-pink-600 font-medium text-sm">KES {service.price}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    
+                    {/* Styling/Coloring */}
+                    <div className="px-4 py-2 border-t border-gray-100">
+                      <h4 className="font-medium text-purple-600 text-sm mb-2">Styling & Coloring</h4>
+                      {dreadlockServices.styling.map((service, index) => (
+                        <Link
+                          key={index}
+                          to={service.link}
+                          className="flex items-center justify-between px-2 py-1 hover:bg-pink-50 transition-colors duration-200 rounded"
+                          onClick={closeDropdown}
+                        >
+                          <span className="text-gray-700 text-sm">{service.name}</span>
+                          <span className="text-pink-600 font-medium text-sm">KES {service.price}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    
+                    {/* Consultation */}
+                    <div className="px-4 py-2 border-t border-gray-100">
+                      <h4 className="font-medium text-purple-600 text-sm mb-2">Consultation</h4>
+                      {dreadlockServices.consultation.map((service, index) => (
+                        <Link
+                          key={index}
+                          to={service.link}
+                          className="flex items-center justify-between px-2 py-1 hover:bg-pink-50 transition-colors duration-200 rounded"
+                          onClick={closeDropdown}
+                        >
+                          <span className="text-gray-700 text-sm">{service.name}</span>
+                          <span className="text-pink-600 font-medium text-sm">KES {service.price}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    
+                    <div className="border-t border-gray-100 mt-2 pt-2">
+                      <Link
+                        to="/dreadlocks"
+                        className="flex items-center justify-center px-4 py-2 text-pink-600 font-medium hover:bg-pink-50 transition-colors duration-200"
+                        onClick={closeDropdown}
+                      >
+                        View All Dreadlock Services
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Trench Coats */}
+              <Link
+                to="/coats"
+                className={`flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
+                  isActive('/coats') 
+                    ? 'text-pink-600' 
+                    : 'text-gray-700 hover:text-pink-600'
+                }`}
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Trench Coats</span>
+              </Link>
+
+              {/* Book Now / Order Now Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleDropdown('book')
+                  }}
+                  className="flex items-center space-x-2 text-sm font-medium bg-gradient-to-r from-pink-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-200"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span>Book Now</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${
+                    openDropdown === 'book' ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                
+                {openDropdown === 'book' && (
+                  <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-800">Quick Actions</h3>
+                    </div>
+                    <Link
+                      to="/booking"
+                      className="flex items-center space-x-3 px-4 py-3 hover:bg-pink-50 transition-colors duration-200"
+                      onClick={closeDropdown}
+                    >
+                      <Calendar className="w-5 h-5 text-pink-600" />
+                      <div>
+                        <div className="font-medium text-gray-800">Book Services</div>
+                        <div className="text-sm text-gray-600">Schedule appointments</div>
+                      </div>
+                    </Link>
+                    <Link
+                      to="/coats"
+                      className="flex items-center space-x-3 px-4 py-3 hover:bg-purple-50 transition-colors duration-200"
+                      onClick={closeDropdown}
+                    >
+                      <Plus className="w-5 h-5 text-purple-600" />
+                      <div>
+                        <div className="font-medium text-gray-800">Order Coats</div>
+                        <div className="text-sm text-gray-600">Shop trench coats</div>
+                      </div>
+                    </Link>
+                    <Link
+                      to="/cart"
+                      className="flex items-center space-x-3 px-4 py-3 hover:bg-pink-50 transition-colors duration-200"
+                      onClick={closeDropdown}
+                    >
+                      <ShoppingCart className="w-5 h-5 text-pink-600" />
+                      <div>
+                        <div className="font-medium text-gray-800">View Cart</div>
+                        <div className="text-sm text-gray-600">{cartItemCount} items</div>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </div>
               <Link
                 to="/about"
                 className={`flex items-center space-x-2 text-sm font-medium transition-colors duration-200 ${
@@ -118,7 +451,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </nav>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="lg:hidden flex items-center space-x-4">
+              <Link
+                to="/booking"
+                className="bg-gradient-to-r from-pink-600 to-purple-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:from-pink-700 hover:to-purple-700 transition-all duration-200"
+              >
+                Book
+              </Link>
               <Link
                 to="/cart"
                 className="relative p-2 text-gray-700 hover:text-pink-600 transition-colors duration-200"
