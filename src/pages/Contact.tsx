@@ -112,14 +112,14 @@ const Contact: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-pink-600 to-purple-600 text-white py-16">
+      <div className="bg-gradient-to-r from-pink-600 to-purple-600 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6">
-              <MessageSquare className="w-8 h-8" />
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="w-7 h-7" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+            <h1 className="text-3xl md:text-4xl font-bold mb-3">Contact Us</h1>
+            <p className="text-lg opacity-90 max-w-3xl mx-auto">
               Get in touch with our friendly team - we're here to help with all your beauty needs
             </p>
           </div>
@@ -130,11 +130,10 @@ const Contact: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Contact Information */}
           <div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-8">Get In Touch</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Get In Touch</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
               {contactInfo.map((info, index) => {
-                const IconComponent = info.icon
                 return (
                   <div key={index} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
                     <div className={`w-12 h-12 bg-gradient-to-br ${
@@ -142,9 +141,26 @@ const Contact: React.FC = () => {
                         ? 'from-pink-500 to-pink-600' 
                         : 'from-purple-500 to-purple-600'
                     } rounded-lg flex items-center justify-center mb-4`}>
-                      <IconComponent className="w-6 h-6 text-white" />
+                      {info.title === 'Location' && (
+                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                      )}
+                      {info.title === 'Phone' && (
+                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                      )}
+                      {info.title === 'Email' && (
+                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                      )}
+                      {info.title === 'Working Hours' && (
+                        <Clock className="w-6 h-6 text-white" />
+                      )}
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">{info.title}</h3>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">{info.title}</h3>
                     <div className="space-y-1">
                       {info.details.map((detail, i) => (
                         <p key={i} className="text-gray-600 text-sm">{detail}</p>
@@ -287,35 +303,45 @@ const Contact: React.FC = () => {
 
             {/* Payment Info */}
             <div className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Payment Methods We Accept</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Payment Methods We Accept</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-green-600 font-bold">M</span>
+                    <svg className="w-8 h-8 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
                   </div>
                   <span className="text-sm text-gray-600">M-Pesa</span>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-blue-600">💵</span>
+                    <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                    </svg>
                   </div>
                   <span className="text-sm text-gray-600">Cash</span>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-purple-600 font-bold">P</span>
+                    <svg className="w-8 h-8 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h8.418c2.508 0 4.514.893 5.535 2.459 1.008 1.566 1.008 3.618 0 5.184-1.021 1.566-3.027 2.459-5.535 2.459h-4.94l-1.018 4.865h2.629c.484 0 .875.381.875.852 0 .471-.391.852-.875.852H7.076c-.484 0-.875-.381-.875-.852 0-.471.391-.852.875-.852zm1.646-7.896h3.735c1.756 0 3.045-.635 3.598-1.777.553-1.142.553-2.651 0-3.793-.553-1.142-1.842-1.777-3.598-1.777H9.34L8.722 13.441z"/>
+                    </svg>
                   </div>
                   <span className="text-sm text-gray-600">PayPal</span>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-orange-600 font-bold">PL</span>
+                    <svg className="w-8 h-8 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
                   </div>
                   <span className="text-sm text-gray-600">Payless</span>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <span className="text-red-600 font-bold">K</span>
+                    <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/>
+                    </svg>
                   </div>
                   <span className="text-sm text-gray-600">KCB Paybill</span>
                 </div>
@@ -326,7 +352,7 @@ const Contact: React.FC = () => {
 
         {/* FAQ Section */}
         <div className="mt-20">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {faqs.map((faq, index) => (
